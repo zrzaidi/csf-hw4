@@ -74,7 +74,7 @@ void merge_sort(int64_t *arr, size_t begin, size_t end, size_t threshold) {
 
   left_pid = fork();
   if (left_pid == -1) {
-    fatal("ERROR: Failed to fork for left child");
+    fatal("Failed to fork for left child");
   } else if (left_pid == 0) {
     merge_sort(arr, begin, mid, threshold);
     exit(0);
@@ -82,7 +82,7 @@ void merge_sort(int64_t *arr, size_t begin, size_t end, size_t threshold) {
 
   right_pid = fork();
   if (right_pid == -1) {
-    fatal("ERROR: Failed to fork for right child");
+    fatal("Failed to fork for right child");
   } else if (right_pid == 0) {
     merge_sort(arr, mid, end, threshold);
     exit(0);
@@ -148,38 +148,26 @@ int main(int argc, char **argv) {
   char *end;
   size_t threshold = (size_t) strtoul(argv[2], &end, 10);
   if (end != argv[2] + strlen(argv[2])) {
-    // TODO: report an error (threshold value is invalid)
+    fatal("Invalid threshold");
   }
-
-  // TODO: open the file
-
-  // TODO: use fstat to determine the size of the file
-
-  // TODO: map the file into memory using mmap
-
-  // TODO: sort the data!
-
-  // TODO: unmap and close the file
-
-  // TODO: exit with a 0 exit code if sort was successful
 
   // open the file
   int fd = open(filename, O_RDWR);
   if (fd == -1) {
-    fatal("ERROR: Failed to open file");
+    fatal("Failed to open file");
   }
 
   // use fstat to determine the size of the file
   struct stat statbuf;
   if (fstat(fd, &statbuf) == -1) {
-    fatal("ERROR: Failed to get file stats");
+    fatal("Failed to get file stats");
   }
   size_t file_size_in_bytes = statbuf.st_size;
 
   // map the file into memory using mmap
   int64_t *data = mmap(NULL, file_size_in_bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   if (data == MAP_FAILED) {
-    fatal("ERROR: ailed to memory map file");
+    fatal("Failed to memory map file");
   }
 
   // sort the data!
@@ -187,10 +175,10 @@ int main(int argc, char **argv) {
 
   // unmap and close the file
   if (munmap(data, file_size_in_bytes) == -1) {
-    fatal("ERROR: Failed to unmap memory");
+    fatal("Failed to unmap memory");
   }
   if (close(fd) == -1) {
-    fatal("ERROR: Failed to close file");
+    fatal("Failed to close file");
   }
 
   // exit with a 0 exit code if sort was successful
